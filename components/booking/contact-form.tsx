@@ -9,7 +9,7 @@ import { useLanguageStore } from "@/lib/use-language-store"
 import { translations } from "@/lib/translations"
 
 export function ContactForm() {
-  const { clientName, clientPhone, clientEmail, notes, setClientName, setClientPhone, setClientEmail, setNotes, submit, prevStep } = useBookingStore()
+  const { clientName, clientPhone, clientEmail, notes, setClientName, setClientPhone, setClientEmail, setNotes, submit, prevStep, submitting, submitError } = useBookingStore()
   const { language } = useLanguageStore()
   const t = translations[language]
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -72,12 +72,16 @@ export function ContactForm() {
         </div>
       </div>
 
+      {submitError && (
+        <p className="text-xs text-destructive mt-4">{submitError}</p>
+      )}
+
       <div className="mt-8 flex justify-between">
-        <Button variant="outline" onClick={prevStep}>
+        <Button variant="outline" onClick={prevStep} disabled={submitting}>
           {t.booking.back}
         </Button>
-        <Button onClick={handleSubmit}>
-          {t.booking.submit}
+        <Button onClick={handleSubmit} disabled={submitting}>
+          {submitting ? '...' : t.booking.submit}
         </Button>
       </div>
     </div>

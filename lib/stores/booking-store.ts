@@ -11,6 +11,8 @@ interface BookingState {
   clientEmail: string;
   notes: string;
   submitted: boolean;
+  submitting: boolean;
+  submitError: string | null;
   setStep: (step: number) => void;
   nextStep: () => void;
   prevStep: () => void;
@@ -22,7 +24,7 @@ interface BookingState {
   setClientPhone: (phone: string) => void;
   setClientEmail: (email: string) => void;
   setNotes: (notes: string) => void;
-  submit: () => void;
+  submit: () => Promise<void>;
   reset: () => void;
 }
 
@@ -37,6 +39,8 @@ export const useBookingStore = create<BookingState>((set) => ({
   clientEmail: '',
   notes: '',
   submitted: false,
+  submitting: false,
+  submitError: null,
   setStep: (step) => set({ step }),
   nextStep: () => set((s) => ({ step: Math.min(s.step + 1, 5) })),
   prevStep: () => set((s) => ({ step: Math.max(s.step - 1, 1) })),
@@ -48,7 +52,34 @@ export const useBookingStore = create<BookingState>((set) => ({
   setClientPhone: (clientPhone) => set({ clientPhone }),
   setClientEmail: (clientEmail) => set({ clientEmail }),
   setNotes: (notes) => set({ notes }),
-  submit: () => set({ submitted: true, step: 5 }),
+  submit: async () => {
+    const state = useBookingStore.getState();
+    set({ submitting: true, submitError: null });
+    try {
+      const res = await fetch('/api/booking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          serviceId: state.selectedServiceId,
+          specialistId: state.selectedSpecialistId,
+          date: state.selectedDate,
+          time: state.selectedTime,
+          clientName: state.clientName,
+          clientPhone: state.clientPhone,
+          clientEmail: state.clientEmail,
+          notes: state.notes,
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: 'Server error' }));
+        set({ submitting: false, submitError: err.error || 'Failed to submit' });
+        return;
+      }
+      set({ submitted: true, step: 5, submitting: false });
+    } catch {
+      set({ submitting: false, submitError: 'Network error' });
+    }
+  },
   reset: () => set({
     step: 1,
     selectedServiceId: null,
@@ -60,5 +91,7 @@ export const useBookingStore = create<BookingState>((set) => ({
     clientEmail: '',
     notes: '',
     submitted: false,
+    submitting: false,
+    submitError: null,
   }),
 }));
