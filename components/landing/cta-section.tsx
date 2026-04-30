@@ -28,7 +28,7 @@ export function CtaSection() {
             <h2 className="text-3xl md:text-4xl font-bold">{t.cta.title}</h2>
             <p className="mt-4 text-lg text-white/80 max-w-xl mx-auto">{t.cta.subtitle}</p>
             <Link href="/booking" className="inline-block mt-8">
-              <Button size="lg" variant="gold" className="gap-2 text-base px-8">
+              <Button size="lg" variant="green" className="gap-2 text-base px-8">
                 <CalendarCheck className="w-5 h-5" />
                 {t.cta.button}
               </Button>
