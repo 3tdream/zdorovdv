@@ -59,7 +59,7 @@ export function HeroSection() {
             className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <Link href="/booking">
-              <Button size="lg" variant="destructive" className="gap-2 text-base px-8">
+              <Button size="lg" variant="green" className="gap-2 text-base px-8">
                 <CalendarCheck className="w-5 h-5" />
                 {t.hero.cta}
               </Button>
