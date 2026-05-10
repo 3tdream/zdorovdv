@@ -39,6 +39,26 @@ export interface BookingRequest {
 
 export type Language = 'ru' | 'en';
 
+export type UserRole = 'admin' | 'manager' | 'viewer';
+export type UserStatus = 'active' | 'inactive' | 'blocked';
+
+export interface AdminUser {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+  status: UserStatus;
+  createdAt: string;
+  lastLogin: string | null;
+  avatar?: string;
+}
+
+export interface AdminSession {
+  user: AdminUser;
+  token: string;
+  expiresAt: string;
+}
+
 export interface ChatMessage {
   id: string;
   role: 'user' | 'assistant';
