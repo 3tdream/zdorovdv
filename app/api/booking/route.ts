@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function GET() {
-  const bookings = await readBookings();
-  return NextResponse.json({ bookings, total: bookings.length });
-}
+// MC-462: no GET. It returned every stored booking — client names, phones,
+// emails and notes — to anyone, and nothing in the app reads it (the booking
+// form only POSTs). A staff list view, if one is ever needed, belongs behind
+// the /api/admin auth (Bearer token, role check), not on this public route.
